@@ -1,0 +1,29 @@
+from collections import defaultdict, deque
+
+class Solution:
+    def findOrder(self, numCourses, prerequisites):
+        # 构建图和入度表
+        graph = defaultdict(list)
+        in_degree = [0] * numCourses
+
+        for course, prereq in prerequisites:
+            graph[prereq].append(course)
+            in_degree[course] += 1
+
+        # 初始化队列，添加所有入度为0的课程
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        result = []
+
+        # BFS遍历
+        while queue:
+            curr = queue.popleft()
+            result.append(curr)
+
+            # 更新所有依赖于当前课程的课程的入度
+            for next_course in graph[curr]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+
+        # 如果能够完成所有课程，返回顺序，否则返回空列表
+        return result if len(result) == numCourses else []

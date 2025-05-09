@@ -1,0 +1,41 @@
+from collections import deque
+
+class Solution:
+    def orangesRotting(self, grid):
+        rows, cols = len(grid), len(grid[0])
+        fresh_count = 0
+        rotten = deque()
+
+        # 统计新鲜橘子数量并找出腐烂的橘子
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1:
+                    fresh_count += 1
+                elif grid[r][c] == 2:
+                    rotten.append((r, c))
+
+        minutes = 0
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 右、下、左、上
+
+        # BFS遍历
+        while rotten and fresh_count > 0:
+            minutes += 1
+
+            # 处理当前轮中所有腐烂的橘子
+            for _ in range(len(rotten)):
+                r, c = rotten.popleft()
+
+                # 检查四个方向
+                for dr, dc in directions:
+                    nr, nc = r + dr, c + dc
+
+                    # 如果相邻位置是新鲜橘子
+                    if (0 <= nr < rows and 0 <= nc < cols and
+                        grid[nr][nc] == 1):
+                        # 使橘子腐烂
+                        grid[nr][nc] = 2
+                        fresh_count -= 1
+                        rotten.append((nr, nc))
+
+        # 如果还有新鲜橘子，则返回-1
+        return minutes if fresh_count == 0 else -1
