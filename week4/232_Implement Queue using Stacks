@@ -1,0 +1,29 @@
+class MyQueue:
+    def __init__(self):
+        # 初始化两个栈
+        self.in_stack = []  # 用于入队操作
+        self.out_stack = [] # 用于出队操作
+
+    def push(self, x: int) -> None:
+        # 将元素添加到入栈
+        self.in_stack.append(x)
+
+    def pop(self) -> int:
+        # 确保出栈有元素
+        self._shift_stacks()
+        return self.out_stack.pop()
+
+    def peek(self) -> int:
+        # 获取队列前端元素而不移除它
+        self._shift_stacks()
+        return self.out_stack[-1]
+
+    def empty(self) -> bool:
+        # 检查队列是否为空
+        return not self.in_stack and not self.out_stack
+
+    def _shift_stacks(self):
+        # 如果出栈为空，将入栈的所有元素转移到出栈
+        if not self.out_stack:
+            while self.in_stack:
+                self.out_stack.append(self.in_stack.pop())
